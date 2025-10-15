@@ -1,0 +1,107 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@Autonomous(name = "RobotDance", group = "Robot")
+public class RobotDance extends LinearOpMode {
+
+    // Define the hardware
+    private DcMotor leftFront;
+    private DcMotor rightFront;
+    private DcMotor leftBack;
+    private DcMotor rightBack;
+
+    @Override
+    public void runOpMode() {
+
+        // Initialize the hardware
+        leftFront = hardwareMap.get(DcMotor.class, "left_front_motor");
+        rightFront = hardwareMap.get(DcMotor.class, "right_front_motor");
+        leftBack = hardwareMap.get(DcMotor.class, "left_back_motor");
+        rightBack = hardwareMap.get(DcMotor.class, "right_back_motor");
+
+
+       // Set motor directions (assuming right motors are reversed)
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
+
+        // Tell the user the program is ready
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+
+        // Perform the dance routine
+        if (opModeIsActive()) {
+            // Dance Move 1: Go forward and back
+            move(0.5, 1000); // Drive forward at 50% power for 1 second
+            sleep(500);      // Pause for 0.5 seconds
+            move(-0.5, 1000); // Drive backward at 50% power for 1 second
+            sleep(500);
+
+
+           // Dance Move 2: Spin in place
+            spin(0.5, 1000); // Spin right at 50% power for 1 second
+            sleep(500);
+            spin(-0.5, 1000); // Spin left at 50% power for 1 second
+            sleep(500);
+
+            // Dance Move 3: Zigzag (requires mecanum wheels for easy strafing)
+            // If you have mecanum wheels, you can implement a strafe method here.
+            // For standard wheels, this might be a series of turns.
+            turn(0.5, 500);  // Turn right
+            move(0.5, 500);  // Drive forward
+            turn(-0.5, 500); // Turn left
+            move(0.5, 500);  // Drive forward
+            sleep(1000);
+
+            // Finish the dance
+            telemetry.addData("Status", "Dance complete!");
+            telemetry.update();
+        }
+    }
+
+
+// Helper method to move forward or backward
+    private void move(double power, long duration) {
+        leftFront.setPower(power);
+        rightFront.setPower(power);
+        leftBack.setPower(power);
+        rightBack.setPower(power);
+        sleep(duration);
+        stopMotors();
+    }
+
+    // Helper method to spin in place
+    private void spin(double power, long duration) {
+        leftFront.setPower(power);
+        rightFront.setPower(-power);
+        leftBack.setPower(power);
+        rightBack.setPower(-power);
+        sleep(duration);
+        stopMotors();
+    }
+
+    // Helper method to turn slightly
+    private void turn(double power, long duration) {
+        leftFront.setPower(power);
+        rightFront.setPower(-power);
+        leftBack.setPower(power);
+        rightBack.setPower(-power);
+        sleep(duration);
+        stopMotors();
+    }
+
+    // Helper method to stop all motors
+    private void stopMotors() {
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setPower(0);
+        rightBack.setPower(0);
+    }
+}
